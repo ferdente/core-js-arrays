@@ -524,17 +524,7 @@ function getMaxItems(arr, n) {
  *    findCommonElements([1, 2, 3], ['a', 'b', 'c']) => []
  */
 function findCommonElements(arr1, arr2) {
-  const arrElements = [];
-
-  for (let i = 0; i < arr1.length; i += 1) {
-    const element = arr1[i];
-
-    if (arr2.includes(element)) {
-      arrElements.push(element);
-    }
-  }
-
-  return arrElements;
+  return arr1.filter((element) => arr2.includes(element));
 }
 
 /**
@@ -549,24 +539,18 @@ function findCommonElements(arr1, arr2) {
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
 function findLongestIncreasingSubsequence(nums) {
-  const cArr = [];
-
   let count = 1;
-  for (let i = 0; i < nums.length; i += 1) {
-    if (nums[i] < nums[i + 1]) {
+  let result = 0;
+  nums.map((e, i) => {
+    if (e < nums[i + 1]) {
       count += 1;
     } else {
-      cArr.push(count);
+      result = result < count ? count : result;
       count = 1;
     }
-  }
-
-  let maxLength = 0;
-  for (let i = 0; i < cArr.length; i += 1) {
-    maxLength = Math.max(maxLength, cArr[i]);
-  }
-
-  return maxLength;
+    return result;
+  });
+  return result;
 }
 
 /**
@@ -584,15 +568,10 @@ function findLongestIncreasingSubsequence(nums) {
  *  propagateItemsByPositionIndex([ 1,2,3,4,5 ]) => [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5 ]
  */
 function propagateItemsByPositionIndex(arr) {
-  const propArr = [];
-
-  for (let i = 0; i < arr.length; i += 1) {
-    for (let j = 0; j <= i; j += 1) {
-      propArr.push(arr[i]);
-    }
-  }
-
-  return propArr;
+  return arr.reduce((propArr, item, i) => {
+    const repeatedItems = Array.from({ length: i + 1 }, () => item);
+    return propArr.concat(repeatedItems);
+  }, []);
 }
 
 /**
@@ -669,23 +648,24 @@ function sortDigitNamesByNumericOrder(arr) {
  *
  */
 function swapHeadAndTail(arr) {
-  const result = [...arr];
-
-  const { length } = result;
-
-  if (length <= 1) {
-    return result;
+  let splitIndex = 0;
+  let swappedArr;
+  if (arr.length % 2 === 0) {
+    splitIndex = arr.length / 2;
+    swappedArr = [
+      ...arr.slice(splitIndex, arr.length),
+      ...arr.slice(0, splitIndex),
+    ];
+  } else {
+    splitIndex = Math.floor(arr.length / 2);
+    swappedArr = [
+      ...arr.slice(splitIndex + 1, arr.length),
+      arr[splitIndex],
+      ...arr.slice(0, splitIndex),
+    ];
   }
 
-  const middleIndex = Math.floor(length / 2);
-
-  for (let i = 0; i < middleIndex; i += 1) {
-    const temp = result[i];
-    result[i] = result[length - middleIndex + i];
-    result[length - middleIndex + i] = temp;
-  }
-
-  return result;
+  return swappedArr;
 }
 
 module.exports = {
